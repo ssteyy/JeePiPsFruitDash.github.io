@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JeePiPs: Fruit Dash</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="assets/characters/Red/idle/idle_1.png">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <div id="ui-layer">
+            <!-- Start Screen -->
+            <div id="start-screen" class="screen">
+                <div class="start-stats-container">
+                    <div class="coin-container">
+                        <img src="assets/images/coin.png" alt="Coin" class="ui-icon">
+                        <span id="start-coins">0</span>
+                    </div>
+                    <div class="score-container-start hidden">
+                        <img src="assets/images/fruit.png" alt="Fruit" class="ui-icon">
+                        <span id="score-start">0</span>
+                    </div>
+                </div>
+                <div class="logo-container">~
+                    <img src="assets/assets_logo/logo_and_text.png" class="logo_text" alt="JeePiPs Forest Dash">
+                </div>
+                <button id="start-button">&#9654;</button>
+                <div id="start-controls">
+                    <button id="start-shop-button">&#x1F6D2;</button>
+                </div>
+            </div>
+
+            <!-- Game UI -->
+            <div id="game-ui" class="hidden">
+                <div id="stats-container">
+                    <div id="coin-container">
+                        <img src="assets/images/coin.png" alt="Coin" class="ui-icon">
+                        <span id="coins">0</span>
+                    </div>
+                    <div id="score-container">
+                        <img src="assets/images/fruit.png" alt="Fruit" class="ui-icon">
+                        <span id="score">0</span>
+                    </div>
+                </div>
+                <div id="controls">
+                    <button id="pause-play-button">&#9208;</button>
+                    <button id="shop-button">&#x1F6D2;</button>
+                </div>
+            </div>
+
+            <!-- High Score UI -->
+            <div id="high-score-container">
+                <img src="assets/images/champ_point.png" alt="Champion Point" class="ui-icon">
+                <span id="high-score">0</span>
+            </div>
+
+            <!-- Shop Screen -->
+            <div id="shop-screen" class="screen hidden">
+                <h1>Character Shop</h1>
+                <div id="shop-coins">
+                    <img src="assets/images/coin.png" alt="Coin" class="ui-icon">
+                    <span id="shop-coins-amount">0</span>
+                </div>
+                <div id="character-grid">
+                    <!-- Characters will be populated by JavaScript -->
+                </div>
+                <button id="back-to-game-button">←</button>
+            </div>
+
+            <!-- Game Over Coin Display -->
+            <div id="game-over-coin-container" class="hidden">
+                <img src="assets/images/coin.png" alt="Coin" class="ui-icon">
+                <span id="game-over-coins">0</span>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div id="game-over-screen" class="screen hidden">
+                <div class="game-over-header">
+                    <h1>Game Over</h1>
+                    <div class="game-over-icon"></div>
+                </div>
+                <div class="game-over-stats">
+                    <div class="final-coins-container">
+                        <img src="assets/images/coin.png" alt="Coin" class="ui-icon">
+                        <span class="final-coins-label">Coins Collected:</span>
+                        <span id="final-coins" class="final-coins-value">0</span>
+                    </div>
+                    <div class="final-score-container">
+                        <img src="assets/images/fruit.png" alt="Fruit" class="ui-icon">
+                        <span class="final-score-label">Fruits Collected:</span>
+                        <span id="final-score" class="final-score-value">0</span>
+                    </div>
+                </div>
+                <p id="game-over-reason"></p>
+                <div class="game-over-buttons">
+                    <button id="restart-button">Try Again</button>
+                </div>
+                <div id="game-over-controls">
+                    <button id="game-over-shop-button">&#x1F6D2;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/game.js"></script>
+</body>
+</html>
