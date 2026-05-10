@@ -27,26 +27,26 @@ let distance = 0;
 const CHARACTER_COLORS = ['Sand', 'Midnight_Blue', 'Espresso', 'Electric_Lime', 'Amber', 'Charcoal', 'Coral', 'Crimson', 'Forest_Green', 'Gold', 'Lavender', 'Magenta', 'Mint', 'Safety_Orange', 'Sage_Green', 'Sky_Blue', 'Slate_Gray', 'Teal', 'Terracotta', 'Turquoise'];
 const CHARACTER_PRICES = {
     'Red': 0, // Default/free
-    'Sand': 1,
-    'Midnight_Blue': 1,
-    'Espresso': 1,
-    'Electric_Lime': 1,
-    'Amber': 1,
-    'Charcoal': 1,
-    'Coral': 1,
-    'Crimson': 1,
-    'Forest_Green': 1,
-    'Gold': 1,
-    'Lavender': 1,
-    'Magenta': 1,
-    'Mint': 1,
-    'Safety_Orange': 1,
-    'Sage_Green': 1,
-    'Sky_Blue': 1,
-    'Slate_Gray': 1,
-    'Teal': 1,
-    'Terracotta': 1,
-    'Turquoise': 1
+    'Sand': 50,
+    'Midnight_Blue': 50,
+    'Espresso': 50,
+    'Electric_Lime': 100,
+    'Amber': 100,
+    'Charcoal': 100,
+    'Coral': 100,
+    'Crimson': 150,
+    'Forest_Green': 150,
+    'Gold': 150,
+    'Lavender': 150,
+    'Magenta': 200,
+    'Mint': 200,
+    'Safety_Orange': 200,
+    'Sage_Green': 200,
+    'Sky_Blue': 250,
+    'Slate_Gray': 250,
+    'Teal': 250,
+    'Terracotta': 250,
+    'Turquoise': 300
 };
 let currentCharacterColor = 'Sand';
 let unlockedCharacters = ['Sand'];
