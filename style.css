@@ -108,8 +108,9 @@ button {
 #start-button {
     position: absolute;
     bottom: 50px;
-    right: 20px;
-    padding: 40px 50px;
+    right: 30px;
+    padding: 28px 50px;
+    font-size: 70px;
 }
 
 #restart-button {
@@ -728,4 +729,49 @@ button:active {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    body {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    #game-container {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+    }
+
+    #shop-screen h1 {
+        font-size: 45px;
+    }
+
+    #character-grid {
+        margin-right: 20px;
+    }
+
+    #stats-container {
+        font-size: 14px;
+        gap: 10px;
+    }
+
+    #stats-container .ui-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    #start-button {
+        padding: 30px 40px;
+        font-size: 24px;
+    }
+
+    #controls {
+        padding-top: 50px;
+    }
 }

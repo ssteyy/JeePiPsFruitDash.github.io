@@ -53,10 +53,22 @@ let unlockedCharacters = ['Sand'];
 
 // Assets
 const images = {};
+const sounds = {};
 const assetPaths = {
     background: 'assets/images/background.png',
     tree: 'assets/images/tree_stump.png',
     coin: 'assets/images/coin.png'
+};
+const soundPaths = {
+    jee_sound: 'assets/sound/jee_sound.mp3',
+    pip_sound: 'assets/sound/pip_sound.mp3',
+    hit_tree: 'assets/sound/hit_tree.mp3',
+    coin_collect: 'assets/sound/coin_collect.mp3',
+    fruit_collect: 'assets/sound/fruit_collect.mp3',
+    game_background_sound: 'assets/sound/game_background_sound.mp3',
+    fall_road_gap: 'assets/sound/fall_road_gap.mp3',
+    click_button: 'assets/sound/click_button.mp3',
+    game_over: 'assets/sound/game_over.mp3'
 };
 
 function getAnimationPaths(color) {
@@ -128,7 +140,7 @@ const characterImages = {}; // Store all character animations
 function loadAssets() {
     assetsLoaded = 0;
     const totalCharactersToLoad = CHARACTER_COLORS.length + 1; // 20 shop characters + Red
-    totalAssets = Object.keys(assetPaths).length + myFruitAssets.length + (totalCharactersToLoad * 32); // 12 idle + 18 run + 2 jump per character
+    totalAssets = Object.keys(assetPaths).length + myFruitAssets.length + (totalCharactersToLoad * 32) + Object.keys(soundPaths).length; // 12 idle + 18 run + 2 jump per character + sounds
 
     // Load main assets
     for (let key in assetPaths) {
@@ -157,6 +169,22 @@ function loadAssets() {
         };
         fruitImages.push(img);
     });
+
+    // Load sound assets
+    for (let key in soundPaths) {
+        const audio = new Audio();
+        audio.src = soundPaths[key];
+        audio.preload = 'auto';
+        if (key === 'game_background_sound') {
+            audio.loop = true;
+        }
+        sounds[key] = audio;
+        assetsLoaded++;
+        if (assetsLoaded === totalAssets) {
+            console.log('All assets loaded');
+            loadGameData();
+        }
+    }
 
     // Load all character assets (including Red which is default but not in shop)
     const allCharactersToLoad = [...CHARACTER_COLORS, 'Red'];
@@ -234,7 +262,7 @@ class Player {
     constructor() {
         this.width = 80;
         this.height = 80;
-        this.x = 200;
+        this.x = window.innerWidth < 768 ? 40 : 200;
         this.y = CANVAS_HEIGHT - GROUND_HEIGHT - this.height;
         this.vx = 0; // Horizontal velocity
         this.vy = 0;
@@ -283,6 +311,13 @@ class Player {
             if (this.y > groundY) {
                 this.y = groundY;
                 this.vy = 0;
+                if (this.isJumping) {
+                    if (sounds.pip_sound) {
+                        sounds.pip_sound.currentTime = 0;
+                        sounds.pip_sound.playbackRate = 4;
+                        sounds.pip_sound.play();
+                    }
+                }
                 this.isJumping = false;
                 this.jumpCount = 0; // Reset jump count when landing
             }
@@ -587,13 +622,17 @@ function checkCollisions() {
                 const treeTop = obs.y + 8;
                 const treeBottom = obs.y + obs.height - 8;
 
-                // Only game over if hitting from side or jumping into bottom
-                const hittingFromSide = playerCenter < treeLeft || playerCenter > treeRight;
-                const hittingFromBottom = player.y < treeTop && player.vy < 0;
+    // Only game over if hitting from side or jumping into bottom
+    const hittingFromSide = playerCenter < treeLeft || playerCenter > treeRight;
+    const hittingFromBottom = player.y < treeTop && player.vy < 0;
 
-                if (hittingFromSide || hittingFromBottom) {
-                    gameOver('You hit a tree!');
-                }
+    if (hittingFromSide || hittingFromBottom) {
+        if (sounds.hit_tree) {
+            sounds.hit_tree.currentTime = 0;
+            sounds.hit_tree.play();
+        }
+        gameOver('You hit a tree!');
+    }
                 // Landing on top or standing on top is allowed
             }
         }
@@ -603,6 +642,12 @@ function checkCollisions() {
             if (player.x + player.width/2 > obs.x &&
                 player.x + player.width/2 < obs.x + obs.width &&
                 player.y + player.height >= CANVAS_HEIGHT - GROUND_HEIGHT) {
+                if (!player.falling) {
+                    if (sounds.fall_road_gap) {
+                        sounds.fall_road_gap.currentTime = 0;
+                        sounds.fall_road_gap.play();
+                    }
+                }
                 player.falling = true;
             }
         }
@@ -618,10 +663,18 @@ function checkCollisions() {
                 pRect.y + pRect.height > cRect.y) {
                 col.collected = true;
                 if (col.type === 'coin') {
+                    if (sounds.coin_collect) {
+                        sounds.coin_collect.currentTime = 0;
+                        sounds.coin_collect.play();
+                    }
                     coins++;
                     sessionCoins++; // Track session coins
                     updateCoinsUI();
                 } else {
+                    if (sounds.fruit_collect) {
+                        sounds.fruit_collect.currentTime = 0;
+                        sounds.fruit_collect.play();
+                    }
                     score++;
                     updateUI();
                 }
@@ -633,6 +686,13 @@ function checkCollisions() {
 function gameOver(reason) {
     gameState = 'GAMEOVER';
     gameOverReason = reason;
+    if (sounds.game_background_sound) {
+        sounds.game_background_sound.pause();
+    }
+    if (sounds.game_over) {
+        sounds.game_over.currentTime = 0;
+        sounds.game_over.play();
+    }
 
     // Update high score if current score is higher
     if (score > highScore) {
@@ -790,6 +850,10 @@ function populateShop(scrollToColor = null) {
 }
 
 function handleCharacterAction(color, isUnlocked, isSelected, price) {
+    if (sounds.click_button) {
+        sounds.click_button.currentTime = 0;
+        sounds.click_button.play();
+    }
     if (isUnlocked) {
         if (!isSelected) {
             // Actually changing to a different skin
@@ -880,6 +944,10 @@ function showInsufficientCoinsPopup() {
     `;
 
     closeBtn.addEventListener('click', () => {
+        if (sounds.click_button) {
+            sounds.click_button.currentTime = 0;
+            sounds.click_button.play();
+        }
         document.body.removeChild(popup);
     });
 
@@ -891,6 +959,10 @@ window.addEventListener('keydown', (e) => {
     if (e.code === 'Space') {
         if (gameState === 'PLAYING') {
             player.jump();
+            if (sounds.jee_sound) {
+                sounds.jee_sound.currentTime = 0;
+                sounds.jee_sound.play();
+            }
         } else if (gameState === 'PAUSED') {
             resumeGame();
         } else if (gameState === 'START') {
@@ -909,13 +981,55 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
-document.getElementById('start-button').addEventListener('click', startGame);
-document.getElementById('restart-button').addEventListener('click', restartGame);
-document.getElementById('pause-play-button').addEventListener('click', togglePausePlay);
-document.getElementById('shop-button').addEventListener('click', openShop);
-document.getElementById('start-shop-button').addEventListener('click', openShopFromStart);
-document.getElementById('game-over-shop-button').addEventListener('click', openShopFromGameOver);
-document.getElementById('back-to-game-button').addEventListener('click', closeShop);
+document.getElementById('start-button').addEventListener('click', () => {
+    if (sounds.click_button) {
+        sounds.click_button.currentTime = 0;
+        sounds.click_button.play();
+    }
+    startGame();
+});
+document.getElementById('restart-button').addEventListener('click', () => {
+    if (sounds.click_button) {
+        sounds.click_button.currentTime = 0;
+        sounds.click_button.play();
+    }
+    restartGame();
+});
+document.getElementById('pause-play-button').addEventListener('click', () => {
+    if (sounds.click_button) {
+        sounds.click_button.currentTime = 0;
+        sounds.click_button.play();
+    }
+    togglePausePlay();
+});
+document.getElementById('shop-button').addEventListener('click', () => {
+    if (sounds.click_button) {
+        sounds.click_button.currentTime = 0;
+        sounds.click_button.play();
+    }
+    openShop();
+});
+document.getElementById('start-shop-button').addEventListener('click', () => {
+    if (sounds.click_button) {
+        sounds.click_button.currentTime = 0;
+        sounds.click_button.play();
+    }
+    openShopFromStart();
+});
+document.getElementById('game-over-shop-button').addEventListener('click', () => {
+    if (sounds.click_button) {
+        sounds.click_button.currentTime = 0;
+        sounds.click_button.play();
+    }
+    openShopFromGameOver();
+});
+document.getElementById('back-to-game-button').addEventListener('click', () => {
+    if (sounds.click_button) {
+        sounds.click_button.currentTime = 0;
+        sounds.click_button.play();
+    }
+    closeShop();
+});
 
 function startGame() {
     gameState = 'PLAYING';
@@ -925,6 +1039,10 @@ function startGame() {
     document.getElementById('game-ui').classList.remove('hidden');
     document.getElementById('pause-play-button').innerHTML = '&#9208;';
     init();
+    // Start background music when game starts
+    if (sounds.game_background_sound) {
+        sounds.game_background_sound.play();
+    }
 }
 
 function restartGame() {
@@ -935,6 +1053,11 @@ function restartGame() {
     document.getElementById('score-container').classList.remove('hidden');
     document.getElementById('controls').classList.remove('hidden');
     init();
+    // Restart background music
+    if (sounds.game_background_sound) {
+        sounds.game_background_sound.currentTime = 0;
+        sounds.game_background_sound.play();
+    }
 }
 
 function togglePausePlay() {
