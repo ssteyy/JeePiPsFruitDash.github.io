@@ -795,7 +795,7 @@ function closeShop() {
     gameState = shopReturnState;
     document.getElementById('shop-screen').classList.add('hidden');
 
-    if (shopReturnState === 'PLAYING') {
+    if (shopReturnState === 'PLAYING' || shopReturnState === 'PAUSED') {
         document.getElementById('game-ui').classList.remove('hidden');
     } else if (shopReturnState === 'START') {
         document.getElementById('start-screen').classList.remove('hidden');
@@ -1029,6 +1029,16 @@ document.getElementById('back-to-game-button').addEventListener('click', () => {
         sounds.click_button.play();
     }
     closeShop();
+});
+
+document.getElementById('game-container').addEventListener('click', () => {
+    if (gameState === 'PLAYING') {
+        player.jump();
+        if (sounds.jee_sound) {
+            sounds.jee_sound.currentTime = 0;
+            sounds.jee_sound.play();
+        }
+    }
 });
 
 function startGame() {
